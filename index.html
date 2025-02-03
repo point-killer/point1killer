@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="scripts.js" defer></script>
+</head>
+<body class="flex items-center justify-center h-screen text-white">
+    <!-- عرض النقاط في الأعلى اليسار -->
+    <div id="pointsDisplay" class="fixed top-4 left-4 bg-gray-800 p-2 rounded-lg text-sm hidden">
+        <i class="fas fa-coins mr-2"></i>
+        <span id="pointsCount">0</span> نقاط
+    </div>
+
+    <div id="welcomeMessage" class="fixed bottom-4 right-4 text-xs hidden">
+        <p id="welcomeText">مرحبًا، <span id="welcomeUsername"></span></p>
+        <p id="loginSuccessText" class="text-xs mt-1">تم تسجيل الدخول بنجاح</p>
+    </div>
+
+    <div id="notificationArea" class="fixed top-4 right-4 space-y-2"></div>
+
+    <div class="w-96 relative mt-48">
+        <!-- صفحة تسجيل الدخول -->
+        <div id="loginPage" class="space-y-4 mt-16 fade-in">
+            <h1 class="text-2xl font-bold mb-4 text-center">تسجيل الدخول</h1>
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-user text-gray-300"></i>
+                <input type="text" id="usernameOrEmail" placeholder="اليوزر نيم أو الإيميل" class="w-full p-1 border rounded text-black">
+            </div>
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-lock text-gray-300"></i>
+                <div class="relative flex-1">
+                    <input type="password" id="password" placeholder="كلمة السر" class="w-full p-1 border rounded pr-10 text-black">
+                    <i class="fas fa-eye absolute right-3 top-2 cursor-pointer text-xs" onclick="togglePasswordVisibility('password')" style="width: 16px; color: #3E2723;" onmouseover="this.style.color='#5D4037'" onmouseout="this.style.color='#3E2723'"></i>
+                </div>
+            </div>
+            <div class="flex items-center mb-4">
+                <input type="checkbox" id="rememberMe" class="mr-2"> <span>تذكرني</span>
+            </div>
+            <button onclick="login()" class="w-full bg-green-500 text-white p-1 rounded hover:bg-green-600">تسجيل الدخول</button>
+            <p class="mt-4 text-center">مستخدم جديد؟ <a href="#" onclick="showPage('registerPage')" class="text-blue-300">أنشئ حسابًا</a></p>
+            <p class="text-center"><a href="#" onclick="showPage('forgotPasswordPage')" class="text-blue-300">نسيت كلمة السر؟</a></p>
+            <p class="text-center"><a href="#" onclick="showPage('developerPage')" class="text-red-300">دخول المطورين</a></p>
+        </div>
+
+        <!-- صفحة إنشاء حساب -->
+        <div id="registerPage" class="hidden space-y-4 mt-16 fade-in">
+            <h1 class="text-2xl font-bold mb-4 text-center">إنشاء حساب</h1>
+            <div class="flex space-x-4">
+                <div class="flex items-center space-x-2 flex-1">
+                    <i class="fas fa-user text-gray-300"></i>
+                    <input type="text" id="firstName" placeholder="الاسم الأول" class="w-full p-1 border rounded text-black">
+                </div>
+                <div class="flex items-center space-x-2 flex-1">
+                    <i class="fas fa-user text-gray-300"></i>
+                    <input type="text" id="lastName" placeholder="الاسم الأخير" class="w-full p-1 border rounded text-black">
+                </div>
+            </div>
+            <div class="flex space-x-4">
+                <div class="flex items-center space-x-2 flex-1">
+                    <i class="fas fa-at text-gray-300"></i>
+                    <input type="text" id="newUsername" placeholder="اليوزر نيم" class="w-full p-1 border rounded text-black">
+                </div>
+                <div class="flex items-center space-x-2 flex-1">
+                    <i class="fas fa-envelope text-gray-300"></i>
+                    <input type="email" id="email" placeholder="الإيميل" class="w-full p-1 border rounded text-black">
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-lock text-gray-300"></i>
+                <div class="relative flex-1">
+                    <input type="password" id="newPassword" placeholder="كلمة السر" class="w-full p-1 border rounded pr-10 text-black">
+                    <i class="fas fa-eye absolute right-3 top-2 cursor-pointer text-xs" onclick="togglePasswordVisibility('newPassword')" style="width: 16px; color: #3E2723;" onmouseover="this.style.color='#5D4037'" onmouseout="this.style.color='#3E2723'"></i>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-lock text-gray-300"></i>
+                <div class="relative flex-1">
+                    <input type="password" id="recoveryPassword" placeholder="كلمة السر السرية (للاسترداد)" class="w-full p-1 border rounded pr-10 text-black">
+                    <i class="fas fa-eye absolute right-3 top-2 cursor-pointer text-xs" onclick="togglePasswordVisibility('recoveryPassword')" style="width: 16px; color: #3E2723;" onmouseover="this.style.color='#5D4037'" onmouseout="this.style.color='#3E2723'"></i>
+                </div>
+            </div>
+            <button onclick="register()" class="w-full bg-green-500 text-white p-1 rounded hover:bg-green-600">إنشاء حساب</button>
+            <p class="mt-4 text-center">لديك حساب بالفعل؟ <a href="#" onclick="showPage('loginPage')" class="text-blue-300">سجل دخول</a></p>
+        </div>
+
+        <!-- صفحة نسيت كلمة السر -->
+        <div id="forgotPasswordPage" class="hidden space-y-4 mt-16 fade-in">
+            <h1 class="text-2xl font-bold mb-4 text-center">نسيت كلمة السر</h1>
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-user text-gray-300"></i>
+                <input type="text" id="forgotUsernameOrEmail" placeholder="اليوزر نيم أو الإيميل" class="w-full p-1 border rounded text-black">
+            </div>
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-lock text-gray-300"></i>
+                <div class="relative flex-1">
+                    <input type="password" id="forgotRecoveryPassword" placeholder="كلمة السر السرية" class="w-full p-1 border rounded pr-10 text-black">
+                    <i class="fas fa-eye absolute right-3 top-2 cursor-pointer text-xs" onclick="togglePasswordVisibility('forgotRecoveryPassword')" style="width: 16px; color: #3E2723;" onmouseover="this.style.color='#5D4037'" onmouseout="this.style.color='#3E2723'"></i>
+                </div>
+            </div>
+            <button onclick="resetPassword()" class="w-full bg-green-500 text-white p-1 rounded hover:bg-green-600">إعادة تعيين كلمة السر</button>
+            <p class="mt-4 text-center"><a href="#" onclick="showPage('loginPage')" class="text-blue-300">العودة لتسجيل الدخول</a></p>
+        </div>
+
+        <!-- صفحة الترحيب -->
+        <div id="welcomePage" class="hidden space-y-4 mt-16 fade-in">
+            <h1 class="text-2xl font-bold mb-4 text-center">مرحبًا، <span id="welcomeUsername"></span>!</h1>
+            <p class="mb-4 text-center text-sm">لقد سجلت دخولك بنجاح.</p>
+            <div class="flex flex-wrap gap-4 justify-center">
+                <button onclick="showPage('profilePage')" class="custom-button">
+                    <i class="fas fa-user-circle text-sm"></i>
+                    <span class="text-sm">التفاصيل الشخصية</span>
+                </button>
+                <button onclick="showPage('vizaPage')" class="custom-button">
+                    <i class="fas fa-gift text-sm"></i>
+                    <span class="text-sm">فيزات التفعيل</span>
+                </button>
+                <button onclick="showPage('videosPage')" class="custom-button">
+                    <i class="fas fa-video text-sm"></i>
+                    <span class="text-sm">فيديوهات الشرح</span>
+                </button>
+                <button onclick="showPage('gamesPage')" class="custom-button">
+                    <i class="fas fa-gamepad text-sm"></i>
+                    <span class="text-sm">الألعاب</span>
+                </button>
+                <button onclick="showPage('pointsGuidePage')" class="custom-button">
+                    <i class="fas fa-coins text-sm"></i>
+                    <span class="text-sm">كيفية تجميع النقاط</span>
+                </button>
+                <button onclick="showPage('supportPage')" class="custom-button">
+                    <i class="fas fa-headset text-sm"></i>
+                    <span class="text-sm">الدعم الفني</span>
+                </button>
+                <button onclick="logout()" class="custom-button">
+                    <i class="fas fa-sign-out-alt text-sm"></i>
+                    <span class="text-sm">تسجيل الخروج</span>
+                </button>
+                <!-- الأيقونات الجديدة -->
+                <button onclick="showPage('redeemGiftPage')" class="custom-button">
+                    <i class="fas fa-gift text-sm"></i>
+                    <span class="text-sm">استرداد الهدايا</span>
+                </button>
+                <button onclick="showPage('activatedAccountsPage')" class="custom-button">
+                    <i class="fas fa-user-check text-sm"></i>
+                    <span class="text-sm">حسابات مفعلة</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- صفحة استرداد الهدايا -->
+        <div id="redeemGiftPage" class="hidden space-y-4 mt-16 fade-in">
+            <h1 class="text-2xl font-bold mb-4 text-center">استرداد الهدايا</h1>
+            <p class="text-center mb-4 text-sm">أدخل كود الهدية لاسترداد 100 نقطة.</p>
+            <div class="flex items-center space-x-2">
+                <input type="text" id="giftCode" placeholder="أدخل كود الهدية" class="w-full p-1 border rounded text-black">
+                <button onclick="redeemGift()" class="bg-green-500 text-white p-1 rounded hover:bg-green-600">استرداد</button>
+            </div>
+            <p id="giftCodeMessage" class="text-center text-sm text-red-500 hidden"></p>
+            <button onclick="showPage('welcomePage')" class="w-full bg-gray-500 text-white p-1 rounded hover:bg-gray-600 mt-4">العودة</button>
+        </div>
+
+        <!-- صفحة حسابات مفعلة -->
+        <div id="activatedAccountsPage" class="hidden space-y-4 mt-16 fade-in">
+            <h1 class="text-2xl font-bold mb-4 text-center">حسابات مفعلة</h1>
+            <p class="text-center mb-4 text-sm">يمكنك الحصول على حساب مفعل مقابل 200 نقطة.</p>
+            <div id="activatedAccountCode" class="bg-gray-100 p-4 rounded-lg text-center text-black hidden">
+                <p class="text-lg font-bold">الكود الخاص بك:</p>
+                <p id="accountCode" class="text-xl font-mono"></p>
+                <p class="text-sm mt-2 text-red-500">قم بأخذ لقطة شاشة للكود وأرسلها للدعم الفني لاستلام الحساب.</p>
+            </div>
+            <button onclick="purchaseActivatedAccount()" class="w-full bg-red-500 text-white p-1 rounded hover:bg-red-600">شراء حساب مفعل (200 نقطة)</button>
+            <button onclick="showPage('welcomePage')" class="w-full bg-gray-500 text-white p-1 rounded hover:bg-gray-600 mt-4">العودة</button>
+        </div>
+
+        <!-- صفحة الصفحة الشخصية -->
+        <div id="profilePage" class="hidden space-y-4 mt-16 fade-in">
+            <h1 class="text-2xl font-bold mb-4 text-center">التفاصيل الشخصية</h1>
+            <div class="flex space-x-4">
+                <div class="flex items-center space-x-2 flex-1">
+                    <i class="fas fa-user text-gray-300"></i>
+                    <input type="text" id="profileFirstName" placeholder="الاسم الأول" class="w-full p-1 border rounded text-black">
+                </div>
+                <div class="flex items-center space-x-2 flex-1">
+                    <i class="fas fa-user text-gray-300"></i>
+                    <input type="text" id="profileLastName" placeholder="الاسم الأخير" class="w-full p-1 border rounded text-black">
+                </div>
+            </div>
+            <div class="flex space-x-4">
+                <div class="flex items-center space-x-2 flex-1">
+                    <i class="fas fa-at text-gray-300"></i>
+                    <input type="text" id="profileUsername" placeholder="اليوزر نيم" class="w-full p-1 border rounded text-black">
+                </div>
+                <div class="flex items-center space-x-2 flex-1">
+                    <i class="fas fa-envelope text-gray-300"></i>
+                    <input type="email" id="profileEmail" placeholder="الإيميل" class="w-full p-1 border rounded text-black">
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-lock text-gray-300"></i>
+                <div class="relative flex-1">
+                    <input type="password" id="profilePassword" placeholder="كلمة السر الجديدة" class="w-full p-1 border rounded pr-10 text-black">
+                    <i class="fas fa-eye absolute right-3 top-2 cursor-pointer text-xs" onclick="togglePasswordVisibility('profilePassword')" style="width: 16px; color: #3E2723;" onmouseover="this.style.color='#5D4037'" onmouseout="this.style.color='#3E2723'"></i>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-lock text-gray-300"></i>
+                <div class="relative flex-1">
+                    <input type="password" id="profileRecoveryPassword" placeholder="كلمة السر السرية الجديدة" class="w-full p-1 border rounded pr-10 text-black">
+                    <i class="fas fa-eye absolute right-3 top-2 cursor-pointer text-xs" onclick="togglePasswordVisibility('profileRecoveryPassword')" style="width: 16px; color: #3E2723;" onmouseover="this.style.color='#5D4037'" onmouseout="this.style.color='#3E2723'"></i>
+                </div>
+            </div>
+            <button onclick="updateProfile()" class="w-full bg-green-500 text-white p-1 rounded hover:bg-green-600">حفظ التعديلات</button>
+            <button onclick="showPage('welcomePage')" class="w-full bg-gray-500 text-white p-1 rounded hover:bg-gray-600 mt-4">العودة</button>
+        </div>
+
+        <!-- صفحة فيزات التفعيل -->
+        <div id="vizaPage" class="hidden space-y-4 mt-16 fade-in">
+            <h1 class="text-2xl font-bold mb-4 text-center">فيزات التفعيل</h1>
+            <p class="text-center mb-4 text-sm">الحصول على فيزا جديدة يكلف 10 نقاط.</p>
+            <div id="vizaOutput" class="bg-gray-100 p-4 rounded-lg text-center text-black">
+                <div class="flex items-center justify-center">
+                    <p id="vizaNumber" class="text-lg font-bold"></p>
+                    <i class="fas fa-copy text-xl ml-2 cursor-pointer" onclick="copyViza()"></i>
+                </div>
+                <p id="vizaMessage" class="text-sm mt-2">الفيزا يمكن استخدامها على العديد من الحسابات بنفس الفيزا.</p>
+            </div>
+            <button id="getNewVizaButton" onclick="generateViza()" class="w-full bg-red-500 text-white p-1 rounded hover:bg-red-600 mt-4 flex items-center justify-center">
+                <i class="fas fa-sync-alt text-xl mr-2"></i>
+                الحصول على فيزا جديدة (10 نقاط)
+            </button>
+            <button onclick="showPage('welcomePage')" class="w-full bg-gray-500 text-white p-1 rounded hover:bg-gray-600 mt-4">العودة</button>
+        </div>
+
+        <!-- صفحة فيديوهات الشرح -->
+        <div id="videosPage" class="hidden space-y-4 mt-16 fade-in">
+            <h1 class="text-2xl font-bold mb-4 text-center">فيديوهات الشرح</h1>
+            <p class="text-center mb-4 text-sm">هنا يمكنك مشاهدة فيديوهات الشرح المتاحة.</p>
+            <div class="flex flex-col space-y-4">
+                <video controls class="w-full" onended="watchVideo()">
+                    <source src="https://h.top4top.io/m_3307z895e1.mp4">
+                    متصفحك لا يدعم تشغيل الفيديو.
+                </video>
+                <video controls class="w-full" onended="watchVideo()">
+                    <source src="https://dso5.raed.net:452/files/0112-1-.mp4" type="video/mp4">
+                    متصفحك لا يدعم تشغيل الفيديو.
+                </video>
+            </div>
+            <button onclick="showPage('welcomePage')" class="w-full bg-gray-500 text-white p-1 rounded hover:bg-gray-600 mt-4">العودة</button>
+        </div>
+
+        <!-- صفحة كيفية تجميع النقاط -->
+        <div id="pointsGuidePage" class="hidden space-y-4 mt-16 fade-in">
+            <h1 class="text-2xl font-bold mb-4 text-center">كيفية تجميع النقاط</h1>
+            <div class="space-y-4">
+                                <div class="bg-gray-100 p-4 rounded-lg text-black">
+                    <p><strong>4. مشاهدة فيديو شرح:</strong> +5 نقاط <span id="videoTask" class="text-green-500 hidden">✔️</span></p>
+                    <p class="text-sm text-gray-600">شاهد فيديوهات الشرح في قسم "فيديوهات الشرح".</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg text-black">
+                    <p><strong>5. شراء فيزا:</strong> +2 نقاط <span id="vizaTask" class="text-green-500 hidden">✔️</span></p>
+                    <p class="text-sm text-gray-600">احصل على فيزا جديدة من قسم "فيزات التفعيل".</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded-lg text-black">
+                    <p><strong>6. الفوز في لعبة إكس-أو ضد البوت:</strong> +4 نقاط <span id="gameTask" class="text-green-500 hidden">✔️</span></p>
+                    <p class="text-sm text-gray-600">احصل على 3 انتصارات متتالية في لعبة إكس-أو ضد البوت.</p>
+                    <p class="text-sm text-red-500">(يجب تحقيق 3 انتصارات متتالية للحصول على النقاط)</p>
+                </div>
+            </div>
+            <button onclick="showPage('welcomePage')" class="w-full bg-gray-500 text-white p-2 rounded hover:bg-gray-600 mt-4">العودة</button>
+        </div>
+
+        <!-- صفحة التواصل مع الدعم -->
+        <div id="supportPage" class="hidden space-y-4 mt-16 fade-in">
+            <h1 class="text-2xl font-bold mb-4 text-center">التواصل مع الدعم</h1>
+            <p class="text-center mb-4 text-sm">للاستفسارات أو المشاكل، يرجى التواصل مع:</p>
+            <p class="text-center mb-4 text-sm">محمد طارق</p>
+            <p class="text-center mb-4 text-sm">واتساب فقط: <a href="https://wa.me/201123099872" class="text-blue-300">01123099872</a></p>
+            <p class="text-center mb-4 text-sm">محمد أبوشوشة</p>
+            <p class="text-center mb-4 text-sm">واتساب فقط: <a href="https://wa.me/201065406890" class="text-blue-300">01065406890</a></p>
+            <button onclick="showPage('welcomePage')" class="w-full bg-gray-500 text-white p-2 rounded hover:bg-gray-600 mt-4">العودة</button>
+        </div>
+
+        <!-- صفحة المطورين -->
+        <div id="developerPage" class="hidden space-y-4 mt-16 fade-in">
+            <h1 class="text-2xl font-bold mb-4 text-center">صفحة المطورين</h1>
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-lock text-gray-300"></i>
+                <input type="password" id="developerPassword" placeholder="كلمة سر المطورين" class="w-full p-1 border rounded text-black">
+            </div>
+            <button onclick="accessDeveloperPage()" class="w-full bg-green-500 text-white p-1 rounded hover:bg-green-600">دخول</button>
+            <div id="developerContent" class="hidden">
+                <h2 class="text-xl font-bold mb-4 text-center">معلومات المستخدمين</h2>
+                <div class="flex space-x-2 mb-4">
+                    <input type="text" id="searchUser" placeholder="ابحث عن مستخدم..." class="w-full p-1 border rounded text-black">
+                    <button onclick="searchUsers()" class="bg-blue-500 text-white p-1 rounded hover:bg-blue-600">بحث</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full bg-gray-100 text-black rounded-lg">
+                        <thead>
+                            <tr>
+                                <th class="p-2">الاسم</th>
+                                <th class="p-2">اليوزر نيم</th>
+                                <th class="p-2">الإيميل</th>
+                                <th class="p-2">كلمة السر</th>
+                                <th class="p-2">كلمة السر السرية</th>
+                                <th class="p-2">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersList" class="text-center">
+                            <!-- بيانات المستخدمين ستظهر هنا -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex space-x-2 mt-4">
+                    <button onclick="exportToJSON()" class="w-full bg-blue-500 text-white p-1 rounded hover:bg-blue-600">تصدير إلى JSON</button>
+                    <button onclick="exportToCSV()" class="w-full bg-green-500 text-white p-1 rounded hover:bg-green-600">تصدير إلى CSV</button>
+                </div>
+                <button onclick="showActivityLog()" class="w-full bg-yellow-500 text-white p-1 rounded hover:bg-yellow-600 mt-4">عرض سجل النشاطات</button>
+                <button onclick="showPage('welcomePage')" class="w-full bg-gray-500 text-white p-1 rounded hover:bg-gray-600 mt-4">العودة</button>
+
+                <!-- قسم الأفكار الإبداعية -->
+                <h2 class="text-xl font-bold mb-4 text-center mt-8">الأفكار الإبداعية</h2>
+                <div id="developerIdeasList" class="mt-4 space-y-2">
+                    <!-- الأفكار الإبداعية ستظهر هنا -->
+                </div>
+            </div>
+        </div>
+
+        <!-- صفحة تحدي الإبداع -->
+        <div id="challengePage" class="hidden space-y-4 mt-16 fade-in">
+            <h1 class="text-2xl font-bold mb-4 text-center">تحدي الإبداع</h1>
+            <p class="text-center mb-4 text-sm">شارك أفكارك الإبداعية مع الجميع!</p>
+            <div class="flex flex-col space-y-4">
+                <textarea id="challengeIdea" placeholder="اكتب فكرتك الإبداعية هنا..." class="w-full p-2 border rounded text-black"></textarea>
+                <button onclick="submitIdea()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">إرسال الفكرة</button>
+                <p id="ideaError" class="text-center text-sm text-red-500 hidden"></p>
+            </div>
+            <div id="ideasList" class="mt-4 space-y-2">
+                <!-- الأفكار الإبداعية ستظهر هنا -->
+            </div>
+            <button onclick="showPage('welcomePage')" class="w-full bg-gray-500 text-white p-2 rounded hover:bg-gray-600 mt-4">العودة</button>
+        </div>
+
+        <!-- صفحة الألعاب -->
+        <div id="gamesPage" class="hidden space-y-4 mt-16 fade-in">
+            <h1 class="text-2xl font-bold mb-4 text-center">الألعاب</h1>
+            <p class="text-center mb-4 text-sm">العب واربح نقاط!</p>
+            <div class="flex flex-col items-center space-y-4">
+                <button onclick="showPage('playWithBotPage')" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                    <i class="fas fa-robot text-xl mr-2"></i>
+                    اللعب ضد البوت (إكس-أو)
+                </button>
+                <button onclick="showPage('playWithFriendPage')" class="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600">
+                    <i class="fas fa-user-friends text-xl mr-2"></i>
+                    اللعب مع صديق (إكس-أو)
+                </button>
+            </div>
+            <button onclick="showPage('welcomePage')" class="w-full bg-gray-500 text-white p-2 rounded hover:bg-gray-600 mt-4">العودة</button>
+        </div>
+
+        <!-- صفحة اللعب ضد البوت -->
+        <div id="playWithBotPage" class="hidden space-y-4 mt-16 fade-in">
+            <h1 class="text-2xl font-bold mb-4 text-center">اللعب ضد البوت (إكس-أو)</h1>
+            <p class="text-center mb-4 text-sm">كل 3 انتصارات متتالية تعطيك 4 نقاط!</p>
+            <div id="gameBoard" class="grid grid-cols-3 gap-2">
+                <!-- خلايا اللعبة -->
+                <div class="game-cell" data-index="0"></div>
+                <div class="game-cell" data-index="1"></div>
+                <div class="game-cell" data-index="2"></div>
+                <div class="game-cell" data-index="3"></div>
+                <div class="game-cell" data-index="4"></div>
+                <div class="game-cell" data-index="5"></div>
+                <div class="game-cell" data-index="6"></div>
+                <div class="game-cell" data-index="7"></div>
+                <div class="game-cell" data-index="8"></div>
+            </div>
+            <button onclick="resetGame()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">إعادة اللعب</button>
+            <p class="text-center text-sm text-red-500">(يجب تحقيق 3 انتصارات متتالية للحصول على 4 نقاط)</p>
+            <button onclick="showPage('gamesPage')" class="w-full bg-gray-500 text-white p-2 rounded hover:bg-gray-600 mt-4">العودة</button>
+        </div>
+
+        <!-- صفحة اللعب مع صديق -->
+        <div id="playWithFriendPage" class="hidden space-y-4 mt-16 fade-in">
+            <h1 class="text-2xl font-bold mb-4 text-center">اللعب مع صديق (إكس-أو)</h1>
+            <p class="text-center mb-4 text-sm">استمتع باللعب مع صديقك!</p>
+            <div id="gameBoard" class="grid grid-cols-3 gap-2">
+                <!-- خلايا اللعبة -->
+                <div class="game-cell" data-index="0"></div>
+                <div class="game-cell" data-index="1"></div>
+                <div class="game-cell" data-index="2"></div>
+                <div class="game-cell" data-index="3"></div>
+                <div class="game-cell" data-index="4"></div>
+                <div class="game-cell" data-index="5"></div>
+                <div class="game-cell" data-index="6"></div>
+                <div class="game-cell" data-index="7"></div>
+                <div class="game-cell" data-index="8"></div>
+            </div>
+            <button onclick="resetGame()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">إعادة اللعب</button>
+            <button onclick="showPage('gamesPage')" class="w-full bg-gray-500 text-white p-2 rounded hover:bg-gray-600 mt-4">العودة</button>
+        </div>
+
+        <!-- صفحة إرسال الرسائل -->
+        <div id="messagePage" class="hidden space-y-4 mt-16 fade-in">
+            <h1 class="text-2xl font-bold mb-4 text-center">إرسال رسالة</h1>
+            <div id="messagesContainer" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px; max-height: 200px; overflow-y: auto;">
+                <!-- الرسائل ستظهر هنا -->
+            </div>
+            <textarea id="messageInput" placeholder="اكتب رسالتك هنا..." class="w-full p-2 border rounded text-black"></textarea>
+            <button onclick="sendMessage()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">إرسال</button>
+            <p id="messageError" class="text-center text-sm text-red-500 hidden"></p>
+            <button onclick="showPage('welcomePage')" class="w-full bg-gray-500 text-white p-2 rounded hover:bg-gray-600 mt-4">العودة</button>
+        </div>
+    </div>
+</body>
+</html>

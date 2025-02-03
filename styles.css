@@ -1,0 +1,128 @@
+body {
+    background-image: url('https://i.imgur.com/efoUOgy.jpeg'); /* الخلفية الأساسية (الصورة) */
+    background-size: cover; /* تغطية الشاشة بالكامل */
+    background-position: center; /* توسيط الصورة */
+    background-repeat: no-repeat; /* منع تكرار الصورة */
+    background-attachment: fixed; /* تثبيت الخلفية حتى عند التمرير */
+    font-family: 'Tajawal', sans-serif;
+    color: white; /* لون النص أبيض */
+    margin: 0;
+    padding: 0;
+    min-height: 100vh; /* التأكد من أن الجسم يغطي الشاشة بالكامل */
+}
+
+/* باقي الأكواد تبقى كما هي */
+.custom-button {
+    background-color: #3E2723; /* لون بني داكن */
+    color: white;
+    font-size: 1.25rem;
+    font-weight: bold;
+    padding: 12px 24px;
+    border-radius: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.custom-button i {
+    margin-left: 8px;
+}
+
+.idea-card {
+    background-color: rgba(62, 39, 35, 0.8); /* لون بني داكن مع شفافية */
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.idea-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.loading-spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #3E2723; /* لون بني داكن */
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #3E2723; /* لون بني داكن */
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    z-index: 1000;
+    animation: slideIn 0.5s ease-out;
+}
+
+.toast.success {
+    background-color: #4CAF50; /* لون أخضر للنجاح */
+}
+
+.toast.error {
+    background-color: #F44336; /* لون أحمر للخطأ */
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.game-cell {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    border: 2px solid #3E2723; /* لون بني داكن للإطار */
+    cursor: pointer;
+}
+
+.game-cell:hover {
+    background-color: rgba(62, 39, 35, 0.5); /* لون بني داكن مع شفافية عند التمرير */
+}
+
+#ideaError, #messageError {
+    display: none;
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+}
